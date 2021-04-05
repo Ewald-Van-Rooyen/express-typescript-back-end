@@ -1,4 +1,4 @@
-import express, {Application} from "express";
+import express, {Application, Request, Response} from "express";
 
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -6,11 +6,17 @@ import morgan from "morgan";
 import helmet from "helmet";
 import passport from "passport";
 
+import errorHandler from "errorhandler";
+
 import * as dotenv from "dotenv";
 
 import pingRouter from "./router/ping.router";
+import errorMiddleware from "./middleware/error.middleware";
 
 const version = 1;
+
+//Configure isProduction variable
+const isProduction = process.env.NODE_ENV === "production";
 
 dotenv.config();
 
@@ -34,8 +40,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+if (!isProduction) {
+    app.use(errorHandler());
+}
+
 // Application routing
+app.use(errorMiddleware);
 app.use(`/api/v${version}`, pingRouter);
+
 
 export default app;
 
