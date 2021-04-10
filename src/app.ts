@@ -1,4 +1,4 @@
-import express, {Application, Request, Response} from "express";
+import express, {Application} from "express";
 
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -7,6 +7,7 @@ import helmet from "helmet";
 import passport from "passport";
 
 import errorHandler from "errorhandler";
+import actuator from "express-actuator";
 
 import * as dotenv from "dotenv";
 
@@ -22,6 +23,9 @@ dotenv.config();
 
 // Boot express
 const app: Application = express();
+
+// setup express actuator for service health
+app.use(actuator());
 
 // http request logging
 app.use(morgan("dev"));
